@@ -24,7 +24,10 @@ Files go straight from the laptop to the phone over your local network. On a fas
 
 ## Install
 
-Build the installer (see below) and run `PhoneShare-Setup.exe`. It:
+1. Download **PhoneShare-Setup.exe** from the [latest release](https://github.com/G-75-Code/PhoneShare/releases/latest).
+2. Run it. The installer isn't code‑signed, so Windows may show "Windows protected your PC". Click **More info → Run anyway**.
+
+The setup:
 
 - installs to `C:\Program Files\PhoneShare`
 - adds a Windows Firewall rule so phones can connect without a popup
