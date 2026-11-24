@@ -1,0 +1,6 @@
+# Build output (create it with build.ps1)
+build/
+*.exe
+
+# Earlier Node.js prototype, kept locally only
+old-node-version/

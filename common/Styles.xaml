@@ -1,0 +1,134 @@
+<!-- Shared styles. This fragment is pasted into each window's resources; $NAME$ tokens become theme colours. -->
+<SolidColorBrush x:Key="Bg" Color="$BG$"/>
+<SolidColorBrush x:Key="Card" Color="$CARD$"/>
+<SolidColorBrush x:Key="Text" Color="$TEXT$"/>
+<SolidColorBrush x:Key="Muted" Color="$MUTED$"/>
+<SolidColorBrush x:Key="Line" Color="$LINE$"/>
+<SolidColorBrush x:Key="Accent" Color="$ACCENT$"/>
+<SolidColorBrush x:Key="AccentSoft" Color="$ACCENTSOFT$"/>
+<SolidColorBrush x:Key="Hover" Color="$HOVER$"/>
+<SolidColorBrush x:Key="Ok" Color="$OK$"/>
+<SolidColorBrush x:Key="Danger" Color="$DANGER$"/>
+<FontFamily x:Key="Icons">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
+
+<Style x:Key="CardBorder" TargetType="Border">
+  <Setter Property="Background" Value="{StaticResource Card}"/>
+  <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
+  <Setter Property="BorderThickness" Value="1"/>
+  <Setter Property="CornerRadius" Value="12"/>
+  <Setter Property="Padding" Value="18"/>
+</Style>
+
+<Style x:Key="Label" TargetType="TextBlock">
+  <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+  <Setter Property="FontSize" Value="11"/>
+  <Setter Property="FontWeight" Value="SemiBold"/>
+</Style>
+
+<!-- Buttons: one template; a faint overlay darkens (light theme) or lightens (dark theme) on hover. -->
+<Style x:Key="Btn" TargetType="Button">
+  <Setter Property="Background" Value="{StaticResource Card}"/>
+  <Setter Property="Foreground" Value="{StaticResource Text}"/>
+  <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
+  <Setter Property="BorderThickness" Value="1"/>
+  <Setter Property="Padding" Value="18,9"/>
+  <Setter Property="FontSize" Value="14"/>
+  <Setter Property="FontWeight" Value="SemiBold"/>
+  <Setter Property="Cursor" Value="Hand"/>
+  <Setter Property="Template">
+    <Setter.Value>
+      <ControlTemplate TargetType="Button">
+        <Grid>
+          <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8"/>
+          <Border x:Name="Overlay" Background="{StaticResource Text}" Opacity="0" CornerRadius="8"/>
+          <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+        <ControlTemplate.Triggers>
+          <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Overlay" Property="Opacity" Value="0.07"/></Trigger>
+          <Trigger Property="IsPressed" Value="True"><Setter TargetName="Overlay" Property="Opacity" Value="0.14"/></Trigger>
+          <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate>
+    </Setter.Value>
+  </Setter>
+</Style>
+
+<Style x:Key="Primary" TargetType="Button" BasedOn="{StaticResource Btn}">
+  <Setter Property="Background" Value="{StaticResource Accent}"/>
+  <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
+  <Setter Property="Foreground" Value="White"/>
+</Style>
+
+<Style x:Key="Ghost" TargetType="Button" BasedOn="{StaticResource Btn}">
+  <Setter Property="Background" Value="Transparent"/>
+  <Setter Property="BorderThickness" Value="0"/>
+  <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+  <Setter Property="Padding" Value="10,6"/>
+</Style>
+
+<Style TargetType="ProgressBar">
+  <Setter Property="Height" Value="4"/>
+  <Setter Property="Foreground" Value="{StaticResource Accent}"/>
+  <Setter Property="Background" Value="{StaticResource Line}"/>
+  <Setter Property="Template">
+    <Setter.Value>
+      <ControlTemplate TargetType="ProgressBar">
+        <Grid>
+          <Border x:Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="2"/>
+          <Border x:Name="PART_Indicator" Background="{TemplateBinding Foreground}" CornerRadius="2" HorizontalAlignment="Left"/>
+        </Grid>
+      </ControlTemplate>
+    </Setter.Value>
+  </Setter>
+</Style>
+
+<!-- Thin, quiet scroll bar -->
+<Style TargetType="ScrollBar">
+  <Setter Property="Width" Value="8"/>
+  <Setter Property="MinWidth" Value="8"/>
+  <Setter Property="Background" Value="Transparent"/>
+  <Setter Property="Template">
+    <Setter.Value>
+      <ControlTemplate TargetType="ScrollBar">
+        <Track x:Name="PART_Track" IsDirectionReversed="True" Orientation="{TemplateBinding Orientation}">
+          <Track.Thumb>
+            <Thumb>
+              <Thumb.Template>
+                <ControlTemplate TargetType="Thumb">
+                  <Border Background="{StaticResource Line}" CornerRadius="4" Margin="1,2"/>
+                </ControlTemplate>
+              </Thumb.Template>
+            </Thumb>
+          </Track.Thumb>
+        </Track>
+      </ControlTemplate>
+    </Setter.Value>
+  </Setter>
+</Style>
+
+<Style TargetType="CheckBox">
+  <Setter Property="Foreground" Value="{StaticResource Text}"/>
+  <Setter Property="Cursor" Value="Hand"/>
+  <Setter Property="Template">
+    <Setter.Value>
+      <ControlTemplate TargetType="CheckBox">
+        <StackPanel Orientation="Horizontal" Background="Transparent">
+          <Border x:Name="Box" Width="20" Height="20" CornerRadius="5" BorderThickness="1.5"
+                  BorderBrush="{StaticResource Muted}" Background="Transparent" VerticalAlignment="Center">
+            <Path x:Name="Tick" Data="M4,10 L8,14 L16,5" Stroke="White" StrokeThickness="2"
+                  StrokeStartLineCap="Round" StrokeEndLineCap="Round" Visibility="Collapsed"/>
+          </Border>
+          <ContentPresenter Margin="10,0,0,0" VerticalAlignment="Center"/>
+        </StackPanel>
+        <ControlTemplate.Triggers>
+          <Trigger Property="IsChecked" Value="True">
+            <Setter TargetName="Box" Property="Background" Value="{StaticResource Accent}"/>
+            <Setter TargetName="Box" Property="BorderBrush" Value="{StaticResource Accent}"/>
+            <Setter TargetName="Tick" Property="Visibility" Value="Visible"/>
+          </Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate>
+    </Setter.Value>
+  </Setter>
+</Style>

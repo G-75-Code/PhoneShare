@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PhoneShare</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#15171a; --muted:#6b7280; --accent:#2563eb; --line:#e5e7eb; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eceef2; --muted:#9aa1ad; --accent:#4f8cff; --line:#262a33; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  header { padding:20px 16px 8px; }
+  h1 { margin:0; font-size:22px; }
+  .sub { color:var(--muted); font-size:14px; margin-top:4px; }
+  .bar { display:flex; gap:8px; padding:8px 16px 12px; }
+  button, .btn { appearance:none; border:0; border-radius:10px; background:var(--accent); color:#fff; font:600 15px system-ui,sans-serif; padding:12px 16px; text-decoration:none; text-align:center; cursor:pointer; }
+  ul { list-style:none; margin:0; padding:0 16px 24px; }
+  li { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:10px; display:flex; align-items:center; gap:12px; }
+  .info { flex:1; min-width:0; }
+  .name { word-break:break-all; font-size:15px; }
+  .size { color:var(--muted); font-size:13px; margin-top:2px; }
+  .empty { color:var(--muted); text-align:center; padding:40px 16px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>PhoneShare</h1>
+  <div class="sub" id="sub">Loading…</div>
+</header>
+<div class="bar"><button id="all" hidden>Download all</button></div>
+<ul id="list"></ul>
+<script>
+const fmt = b => b >= 1073741824 ? (b / 1073741824).toFixed(2) + ' GB' : (b / 1048576).toFixed(1) + ' MB';
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let current = '';
+async function load() {
+  try {
+    const items = await (await fetch('/api/list', { cache: 'no-store' })).json();
+    const sig = JSON.stringify(items);
+    if (sig === current) return;
+    current = sig;
+    const total = items.reduce((s, i) => s + i.size, 0);
+    document.getElementById('sub').textContent = items.length ? `${items.length} file${items.length > 1 ? 's' : ''} · ${fmt(total)}` : 'Nothing shared yet';
+    document.getElementById('all').hidden = items.length < 2;
+    document.getElementById('list').innerHTML = items.length ? items.map(i => `
+      <li><div class="info"><div class="name">${esc(i.name)}</div><div class="size">${fmt(i.size)}</div></div>
+      <a class="btn" href="/f/${i.id}/${encodeURIComponent(i.name)}" download="${esc(i.name)}">Download</a></li>`).join('')
+      : '<div class="empty">Pick files on your laptop and they will show up here.</div>';
+  } catch { document.getElementById('sub').textContent = 'Laptop not reachable — is PhoneShare running?'; }
+}
+document.getElementById('all').onclick = () => {
+  const links = [...document.querySelectorAll('#list a')];
+  links.forEach((a, n) => setTimeout(() => a.click(), n * 1200));
+};
+load(); setInterval(load, 3000);
+</script>
+</body>
+</html>
